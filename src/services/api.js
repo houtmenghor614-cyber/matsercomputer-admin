@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// Change from localhost to your Render backend URL
+// Use the correct Render backend URL
 const API_BASE_URL = 'https://backend-master-computer.onrender.com/api';
 
 const api = axios.create({
@@ -11,13 +11,10 @@ const api = axios.create({
   timeout: 30000,
 });
 
-// Request interceptor to add token
+// Add request interceptor for debugging
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('adminToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    console.log('Making request to:', config.url);
     return config;
   },
   (error) => {
@@ -29,6 +26,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.error('API Error:', error.config?.url, error.message);
     if (error.response?.status === 401) {
       localStorage.removeItem('adminToken');
       window.location.href = '/login';
