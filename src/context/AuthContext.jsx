@@ -24,7 +24,6 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    // Demo admin credentials
     if (email === 'admin@mastercomputer.com' && password === 'admin123') {
       const token = 'dummy-jwt-token-' + Date.now();
       localStorage.setItem('adminToken', token);
