@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiPlus, FiSearch, FiEdit2, FiTrash2, FiEye } from 'react-icons/fi';
-import { productService, categoryService } from '../services';
+import { FiPlus } from 'react-icons/fi';
+import { productService } from '../services';
 import ProductTable from '../components/Products/ProductTable';
 import DeleteConfirmModal from '../components/Products/DeleteConfirmModal';
 import SearchBar from '../components/Common/SearchBar';
@@ -72,7 +72,6 @@ const Products = () => {
 
   return (
     <div>
-      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-800">Products</h1>
@@ -87,7 +86,6 @@ const Products = () => {
         </button>
       </div>
 
-      {/* Search and Filters */}
       <div className="card mb-6">
         <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
           <SearchBar
@@ -101,7 +99,6 @@ const Products = () => {
         </div>
       </div>
 
-      {/* Products Table */}
       {loading ? (
         <LoadingSpinner />
       ) : (
@@ -113,7 +110,6 @@ const Products = () => {
         />
       )}
 
-      {/* Delete Confirmation Modal */}
       <DeleteConfirmModal
         isOpen={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}

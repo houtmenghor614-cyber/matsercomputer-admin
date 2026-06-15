@@ -11,6 +11,14 @@ const ProductTable = ({ products, onEdit, onDelete, onView }) => {
   const currentProducts = products.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(products.length / itemsPerPage);
 
+  if (products.length === 0) {
+    return (
+      <div className="card text-center py-12">
+        <p className="text-gray-500">No products found</p>
+      </div>
+    );
+  }
+
   return (
     <div className="card overflow-hidden">
       <div className="overflow-x-auto">
@@ -59,7 +67,6 @@ const ProductTable = ({ products, onEdit, onDelete, onView }) => {
                     <span className="text-gray-400 text-sm">No discount</span>
                   )}
                 </td>
-                {/* FIXED STOCK DISPLAY - Shows "Out of Stock" when stock is 0 */}
                 <td className="table-cell">
                   {product.stock_quantity > 0 ? (
                     <span className="text-green-600 font-medium">{product.stock_quantity} in stock</span>
@@ -70,7 +77,7 @@ const ProductTable = ({ products, onEdit, onDelete, onView }) => {
                 <td className="table-cell">
                   <div className="flex items-center justify-center space-x-2">
                     <button
-                      onClick={() => onView(product)}
+                      onClick={() => onView && onView(product)}
                       className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                       title="View"
                     >
