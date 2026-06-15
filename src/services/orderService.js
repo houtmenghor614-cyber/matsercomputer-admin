@@ -1,0 +1,23 @@
+import api from './api';
+
+export const orderService = {
+  // Get all orders
+  getAll: async (params = {}) => {
+    const response = await api.get('/orders', { params });
+    return response.data;
+  },
+
+  // Get single order
+  getById: async (id) => {
+    const response = await api.get(`/orders/${id}`);
+    return response.data;
+  },
+
+  // Update order status
+  updateStatus: async (id, status) => {
+    const response = await api.put(`/orders/${id}/status`, null, { params: { status } });
+    return response.data;
+  },
+};
+
+export default orderService;
