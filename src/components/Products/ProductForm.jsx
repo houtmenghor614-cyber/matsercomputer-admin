@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiSave, FiX, FiUpload, FiPlus, FiTrash2 } from 'react-icons/fi';
+import { FiSave, FiPlus, FiTrash2 } from 'react-icons/fi';
 import { productService, categoryService } from '../../services';
 import ProductImageUpload from './ProductImageUpload';
 import toast from 'react-hot-toast';
@@ -24,26 +24,19 @@ const ProductForm = ({ product, isEdit }) => {
   const [subImages, setSubImages] = useState([]);
   const [sizeInput, setSizeInput] = useState('');
 
-  useEffect(() => {
-    fetchCategories();
-    if (product && isEdit) {
-      loadProductData();
-    }
-  }, [product]);
-
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const data = await categoryService.getAll();
       setCategories(data);
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
-  };
+  }, []);
 
-  const loadProductData = () => {
+  const loadProductData = useCallback(() => {
     let parsedSizes = [];
     try {
-      if (product.sizes) {
+      if (product?.sizes) {
         if (typeof product.sizes === 'string') {
           parsedSizes = JSON.parse(product.sizes);
         } else if (Array.isArray(product.sizes)) {
@@ -56,17 +49,24 @@ const ProductForm = ({ product, isEdit }) => {
     }
     
     setFormData({
-      title_product: product.title_product || '',
-      original_price: product.original_price || '',
-      discount_price: product.discount_price || '',
-      category_id: product.category_id || '',
-      color: product.color || '',
+      title_product: product?.title_product || '',
+      original_price: product?.original_price || '',
+      discount_price: product?.discount_price || '',
+      category_id: product?.category_id || '',
+      color: product?.color || '',
       sizes: parsedSizes,
-      description: product.description || '',
-      stock_quantity: product.stock_quantity || 0,
-      is_featured: product.is_featured || false
+      description: product?.description || '',
+      stock_quantity: product?.stock_quantity || 0,
+      is_featured: product?.is_featured || false
     });
-  };
+  }, [product]);
+
+  useEffect(() => {
+    fetchCategories();
+    if (product && isEdit) {
+      loadProductData();
+    }
+  }, [fetchCategories, product, isEdit, loadProductData]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -166,14 +166,10 @@ const ProductForm = ({ product, isEdit }) => {
             <input type="text" name="color" value={formData.color} onChange={handleChange} required className="input-field" placeholder="e.g., Black, White, Red" />
           </div>
           
-          {/* STOCK QUANTITY FIELD */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Stock Quantity *</label>
             <input type="number" name="stock_quantity" value={formData.stock_quantity} onChange={handleChange} required min="0" className="input-field" placeholder="Enter stock quantity" />
             <p className="text-xs text-gray-500 mt-1">Set to 0 to show "Out of Stock" on the website</p>
-            {formData.stock_quantity === 0 && (
-              <p className="text-xs text-red-500 mt-1">⚠️ This product will appear as "Out of Stock" to customers</p>
-            )}
           </div>
           
           <div>

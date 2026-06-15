@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { orderService } from '../services';
 import OrderTable from '../components/Orders/OrderTable';
 import OrderDetailModal from '../components/Orders/OrderDetailModal';
@@ -16,15 +16,7 @@ const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  useEffect(() => {
-    filterOrders();
-  }, [searchTerm, statusFilter, orders]);
-
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       const data = await orderService.getAll();
       setOrders(data);
@@ -35,9 +27,9 @@ const Orders = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const filterOrders = () => {
+  const filterOrders = useCallback(() => {
     let filtered = [...orders];
 
     if (statusFilter !== 'all') {
@@ -53,7 +45,15 @@ const Orders = () => {
     }
 
     setFilteredOrders(filtered);
-  };
+  }, [orders, statusFilter, searchTerm]);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
+
+  useEffect(() => {
+    filterOrders();
+  }, [filterOrders]);
 
   const handleViewOrder = (order) => {
     setSelectedOrder(order);
@@ -86,51 +86,26 @@ const Orders = () => {
 
   return (
     <div>
-      {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Orders</h1>
         <p className="text-gray-600 mt-1">Manage customer orders</p>
       </div>
 
-      {/* Filters */}
       <div className="card mb-6">
         <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-          <SearchBar
-            value={searchTerm}
-            onChange={setSearchTerm}
-            placeholder="Search by order ID, customer name or email..."
-          />
+          <SearchBar value={searchTerm} onChange={setSearchTerm} placeholder="Search by order ID, customer name or email..." />
           <div className="flex items-center space-x-2">
             <FiFilter className="text-gray-400" />
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              {statusOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
+            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              {statusOptions.map(option => (<option key={option.value} value={option.value}>{option.label}</option>))}
             </select>
           </div>
         </div>
       </div>
 
-      {/* Orders Table */}
-      <OrderTable
-        orders={filteredOrders}
-        onView={handleViewOrder}
-        onUpdateStatus={handleUpdateStatus}
-      />
+      <OrderTable orders={filteredOrders} onView={handleViewOrder} onUpdateStatus={handleUpdateStatus} />
 
-      {/* Order Detail Modal */}
-      <OrderDetailModal
-        isOpen={detailModalOpen}
-        onClose={() => setDetailModalOpen(false)}
-        order={selectedOrder}
-        onUpdateStatus={handleUpdateStatus}
-      />
+      <OrderDetailModal isOpen={detailModalOpen} onClose={() => setDetailModalOpen(false)} order={selectedOrder} onUpdateStatus={handleUpdateStatus} />
     </div>
   );
 };

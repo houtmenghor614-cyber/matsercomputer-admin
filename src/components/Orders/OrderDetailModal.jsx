@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiX, FiPackage, FiUser, FiMail, FiPhone, FiMapPin, FiCalendar } from 'react-icons/fi';
+import { FiX, FiPackage, FiUser, FiMapPin } from 'react-icons/fi';
 import { formatPrice, formatDate } from '../../utils/formatters';
 import OrderStatusBadge from './OrderStatusBadge';
 
@@ -28,7 +28,6 @@ const OrderDetailModal = ({ isOpen, onClose, order, onUpdateStatus }) => {
           </div>
           
           <div className="p-6">
-            {/* Order Header */}
             <div className="flex justify-between items-start mb-6">
               <div>
                 <p className="text-sm text-gray-500">Order ID</p>
@@ -40,7 +39,6 @@ const OrderDetailModal = ({ isOpen, onClose, order, onUpdateStatus }) => {
               </div>
             </div>
 
-            {/* Status Section */}
             <div className="bg-gray-50 rounded-lg p-4 mb-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
@@ -63,7 +61,6 @@ const OrderDetailModal = ({ isOpen, onClose, order, onUpdateStatus }) => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              {/* Customer Information */}
               <div className="card">
                 <h4 className="font-semibold mb-3 flex items-center">
                   <FiUser className="mr-2" /> Customer Information
@@ -75,7 +72,6 @@ const OrderDetailModal = ({ isOpen, onClose, order, onUpdateStatus }) => {
                 </div>
               </div>
 
-              {/* Shipping Information */}
               <div className="card">
                 <h4 className="font-semibold mb-3 flex items-center">
                   <FiMapPin className="mr-2" /> Shipping Address
@@ -84,7 +80,6 @@ const OrderDetailModal = ({ isOpen, onClose, order, onUpdateStatus }) => {
               </div>
             </div>
 
-            {/* Order Items */}
             <div className="card mb-6">
               <h4 className="font-semibold mb-3">Order Items</h4>
               <div className="overflow-x-auto">

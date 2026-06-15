@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FiPlus } from 'react-icons/fi';
 import { categoryService } from '../services';
 import CategoryTable from '../components/Categories/CategoryTable';
@@ -18,15 +18,7 @@ const Categories = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [modalMode, setModalMode] = useState('create');
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    filterCategories();
-  }, [searchTerm, categories]);
-
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const data = await categoryService.getAll();
       setCategories(data);
@@ -37,9 +29,9 @@ const Categories = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const filterCategories = () => {
+  const filterCategories = useCallback(() => {
     if (!searchTerm) {
       setFilteredCategories(categories);
     } else {
@@ -48,7 +40,15 @@ const Categories = () => {
       );
       setFilteredCategories(filtered);
     }
-  };
+  }, [searchTerm, categories]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
+  useEffect(() => {
+    filterCategories();
+  }, [filterCategories]);
 
   const handleSave = async (categoryData) => {
     try {
@@ -102,46 +102,21 @@ const Categories = () => {
           <h1 className="text-3xl font-bold text-gray-800">Categories</h1>
           <p className="text-gray-600 mt-1">Manage product categories</p>
         </div>
-        <button
-          onClick={openCreateModal}
-          className="mt-4 sm:mt-0 btn-primary flex items-center space-x-2"
-        >
+        <button onClick={openCreateModal} className="mt-4 sm:mt-0 btn-primary flex items-center space-x-2">
           <FiPlus size={18} />
           <span>Add Category</span>
         </button>
       </div>
 
       <div className="mb-6">
-        <SearchBar
-          value={searchTerm}
-          onChange={setSearchTerm}
-          placeholder="Search categories..."
-          className="max-w-md"
-        />
+        <SearchBar value={searchTerm} onChange={setSearchTerm} placeholder="Search categories..." className="max-w-md" />
       </div>
 
-      <CategoryTable
-        categories={filteredCategories}
-        onEdit={() => {}}
-        onDelete={openDeleteModal}
-        onView={() => {}}
-      />
+      <CategoryTable categories={filteredCategories} onEdit={() => {}} onDelete={openDeleteModal} onView={() => {}} />
 
-      <CategoryModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onSave={handleSave}
-        category={selectedCategory}
-        mode={modalMode}
-      />
+      <CategoryModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onSave={handleSave} category={selectedCategory} mode={modalMode} />
 
-      <DeleteConfirmModal
-        isOpen={deleteModalOpen}
-        onClose={() => setDeleteModalOpen(false)}
-        onConfirm={handleDelete}
-        productName={selectedCategory?.name_category}
-        type="category"
-      />
+      <DeleteConfirmModal isOpen={deleteModalOpen} onClose={() => setDeleteModalOpen(false)} onConfirm={handleDelete} productName={selectedCategory?.name_category} type="category" />
     </div>
   );
 };
