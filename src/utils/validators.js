@@ -7,7 +7,7 @@ export const validateEmail = (email) => {
 
 export const validatePhone = (phone) => {
   // Fixed: Removed unnecessary escape characters
-  const regex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,5}[-\s\.]?[0-9]{1,5}$/;
+  const regex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,5}[-\s.]?[0-9]{1,5}$/;
   return regex.test(phone);
 };
 
