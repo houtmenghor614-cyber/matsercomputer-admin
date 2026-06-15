@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import api from '../services/api';
 
 const AuthContext = createContext();
 
@@ -23,8 +24,8 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = (email, password) => {
-    // Simple admin authentication
+  const login = async (email, password) => {
+    // For demo, using hardcoded admin (since no auth endpoint yet)
     if (email === 'admin@mastercomputer.com' && password === 'admin123') {
       const token = 'dummy-jwt-token-' + Date.now();
       localStorage.setItem('adminToken', token);

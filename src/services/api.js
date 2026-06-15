@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// Change from localhost to your Render backend URL
 const API_BASE_URL = 'https://backend-master-computer.onrender.com/api';
 
 const api = axios.create({
