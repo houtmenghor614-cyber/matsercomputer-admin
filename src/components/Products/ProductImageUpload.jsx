@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { FiUpload, FiX, FiImage } from 'react-icons/fi';
+import { getImageUrl } from '../../services/api';
 
 const ProductImageUpload = ({ mainImage, setMainImage, subImages, setSubImages, existingImages = [], existingMainImage }) => {
   const mainImageRef = useRef();
@@ -40,7 +41,7 @@ const ProductImageUpload = ({ mainImage, setMainImage, subImages, setSubImages, 
               />
             ) : existingMainImage ? (
               <img
-                src={`http://localhost:8000/${existingMainImage}`}
+                src={getImageUrl(existingMainImage)}
                 alt="Existing main"
                 className="w-full h-full object-cover"
                 onError={(e) => {
@@ -101,7 +102,7 @@ const ProductImageUpload = ({ mainImage, setMainImage, subImages, setSubImages, 
           {existingImages && existingImages.length > 0 && existingImages.map((img, index) => (
             <div key={`existing-${index}`} className="relative group">
               <img
-                src={`http://localhost:8000/${img.image_path}`}
+                src={getImageUrl(img.image_path)}
                 alt={`Existing ${index + 1}`}
                 className="w-full h-24 object-cover rounded-lg"
                 onError={(e) => {

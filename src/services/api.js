@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Use the correct Render backend URL
 const API_BASE_URL = 'https://backend-master-computer.onrender.com/api';
+const IMAGE_BASE_URL = 'https://backend-master-computer.onrender.com';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -11,10 +11,21 @@ const api = axios.create({
   timeout: 30000,
 });
 
-// Add request interceptor for debugging
+// Helper function to get image URL
+export const getImageUrl = (imagePath) => {
+  if (!imagePath) return 'https://via.placeholder.com/100x100?text=No+Image';
+  if (imagePath.startsWith('http')) return imagePath;
+  const cleanPath = imagePath.replace(/^\/+/, '');
+  return `${IMAGE_BASE_URL}/${cleanPath}`;
+};
+
+// Request interceptor to add token
 api.interceptors.request.use(
   (config) => {
-    console.log('Making request to:', config.url);
+    const token = localStorage.getItem('adminToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
@@ -26,7 +37,6 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error('API Error:', error.config?.url, error.message);
     if (error.response?.status === 401) {
       localStorage.removeItem('adminToken');
       window.location.href = '/login';
@@ -34,5 +44,30 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export const productService = {
+  getAll: (params) => api.get('/products', { params }),
+  getById: (id) => api.get(`/products/${id}`),
+  create: (data) => api.post('/products', data, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+  update: (id, data) => api.put(`/products/${id}`, data, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+  delete: (id) => api.delete(`/products/${id}`),
+};
+
+export const categoryService = {
+  getAll: () => api.get('/categories'),
+  getById: (id) => api.get(`/categories/${id}`),
+  create: (data) => api.post('/categories', data),
+  delete: (id) => api.delete(`/categories/${id}`),
+};
+
+export const orderService = {
+  getAll: (params) => api.get('/orders', { params }),
+  getById: (id) => api.get(`/orders/${id}`),
+  updateStatus: (id, status) => api.put(`/orders/${id}/status`, null, { params: { status } }),
+};
 
 export default api;

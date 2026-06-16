@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FiEdit2, FiTrash2, FiEye, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { formatPrice } from '../../utils/formatters';
+import { getImageUrl } from '../../services/api';
 
 const ProductTable = ({ products, onEdit, onDelete, onView }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,7 +40,7 @@ const ProductTable = ({ products, onEdit, onDelete, onView }) => {
               <tr key={product.id} className="hover:bg-gray-50 transition-colors">
                 <td className="table-cell">
                   <img 
-                    src={`http://localhost:8000/${product.main_image}`}
+                    src={getImageUrl(product.main_image)}
                     alt={product.title_product}
                     className="w-12 h-12 object-cover rounded-lg"
                     onError={(e) => {
